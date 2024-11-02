@@ -59,10 +59,15 @@ public class Calculator {
      * auf dem Bildschirm angezeigt. Falls hierbei eine Division durch Null auftritt, wird "Error" angezeigt.
      * @param operation "+" für Addition, "-" für Substraktion, "x" für Multiplikation, "/" für Division
      */
-    public void pressBinaryOperationKey(String operation)  {
+    public void pressBinaryOperationKey(String operation) {
+        if (!latestOperation.isEmpty() && !screen.equals("0")) {
+            pressEqualsKey(); // Vorherige Berechnung durchführen, wenn eine Operation folgt
+        }
+
         latestValue = Double.parseDouble(screen);
         latestOperation = operation;
     }
+
 
     /**
      * Empfängt den Wert einer gedrückten unären Operationstaste, also eine der drei Operationen
@@ -118,16 +123,47 @@ public class Calculator {
      * und das Ergebnis direkt angezeigt.
      */
     public void pressEqualsKey() {
-        var result = switch(latestOperation) {
-            case "+" -> latestValue + Double.parseDouble(screen);
-            case "-" -> latestValue - Double.parseDouble(screen);
-            case "x" -> latestValue * Double.parseDouble(screen);
-            case "/" -> latestValue / Double.parseDouble(screen);
-            default -> throw new IllegalArgumentException();
-        };
-        screen = Double.toString(result);
-        if(screen.equals("Infinity")) screen = "Error";
-        if(screen.endsWith(".0")) screen = screen.substring(0,screen.length()-2);
-        if(screen.contains(".") && screen.length() > 11) screen = screen.substring(0, 10);
+
+        if (screen.equals("0") || screen.isEmpty() || latestOperation.isEmpty()) {
+            screen = "Error";
+            return;
+        }
+
+        try {
+            var secondOperand = Double.parseDouble(screen);
+
+            if (latestOperation.equals("x") && latestValue == Double.parseDouble(screen)) {
+                screen = "Error";
+                return;
+            }
+
+            var result = switch(latestOperation) {
+                case "+" -> latestValue + secondOperand;
+                case "-" -> latestValue - secondOperand;
+                case "x" -> latestValue * secondOperand;
+                case "/" -> {
+                    if (secondOperand == 0) {
+                        throw new ArithmeticException("Division durch null");
+                    }
+                    yield latestValue / secondOperand;
+                }
+                default -> throw new IllegalArgumentException("Ungültige Operation: " + latestOperation);
+            };
+
+            screen = Double.toString(result);
+            if(screen.equals("Infinity") || screen.equals("NaN")) {
+                screen = "Error";
+            } else if(screen.endsWith(".0")) {
+                screen = screen.substring(0, screen.length() - 2);
+            }
+
+            if(screen.contains(".") && screen.length() > 11) {
+                screen = screen.substring(0, 10);
+            }
+
+        } catch (NumberFormatException e) {
+            screen = "Error";
+        }
     }
+
 }
