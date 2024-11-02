@@ -105,5 +105,39 @@ class CalculatorTest {
 
         assertEquals(expected, actual);
     }
+
+    @Test
+    @DisplayName("should correctly handle consecutive operations without pressing equals")
+    void testConsecutiveOperations() {
+        Calculator calc = new Calculator();
+
+        calc.pressDigitKey(5);
+        calc.pressBinaryOperationKey("+");
+        calc.pressDigitKey(3);
+        calc.pressBinaryOperationKey("x");
+        calc.pressDigitKey(2);
+        calc.pressEqualsKey();
+
+        String expected = "16";  // Erwartung: (5 + 3) * 2 = 16
+        String actual = calc.readScreen();
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("should display error when multiplying by itself without entering a new number")
+    void testMultiplicationEquals() {
+        Calculator calc = new Calculator();
+
+        calc.pressDigitKey(8);
+        calc.pressBinaryOperationKey("x"); // Operation setzen: 8 x
+        calc.pressEqualsKey(); // Erwartet: Error, da keine zweite Zahl eingegeben wurde
+
+        String expected = "Error";
+        String actual = calc.readScreen();
+
+        assertEquals(expected, actual);
+    }
+
 }
 
