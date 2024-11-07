@@ -125,15 +125,14 @@ class CalculatorTest {
     }
 
     @Test
-    @DisplayName("should display error when multiplying by itself without entering a new number")
-    void testMultiplicationEquals() {
+    @DisplayName("should display last entered number if no operation chosen")
+    void testEqualsKey() {
         Calculator calc = new Calculator();
 
-        calc.pressDigitKey(8);
-        calc.pressBinaryOperationKey("x"); // Operation setzen: 8 x
-        calc.pressEqualsKey(); // Erwartet: Error, da keine zweite Zahl eingegeben wurde
+        calc.pressDigitKey(6);
+        calc.pressEqualsKey();
 
-        String expected = "Error";
+        String expected = "6";
         String actual = calc.readScreen();
 
         assertEquals(expected, actual);

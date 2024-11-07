@@ -124,35 +124,19 @@ public class Calculator {
      */
     public void pressEqualsKey() {
 
-        if (latestOperation.isEmpty()) {
-            screen = "Error";
-            return;
-        }
+        if (latestOperation == null || latestOperation.isEmpty()) return;
 
-        try {
-            var secondOperand = Double.parseDouble(screen);
-
-            if (latestOperation.equals("x") && latestValue == Double.parseDouble(screen)) {
-                screen = "Error";
-                return;
-            }
-
-            var result = switch(latestOperation) {
-                case "+" -> latestValue + secondOperand;
-                case "-" -> latestValue - secondOperand;
-                case "x" -> latestValue * secondOperand;
-                case "/" -> latestValue / Double.parseDouble(screen);
-                default -> throw new IllegalArgumentException();
-            };
-
-            screen = Double.toString(result);
-            if(screen.equals("Infinity")) screen = "Error";
-            if(screen.endsWith(".0")) screen = screen.substring(0,screen.length()-2);
-            if(screen.contains(".") && screen.length() > 11) screen = screen.substring(0, 10);
-
-        } catch (NumberFormatException e) {
-            screen = "Error";
-        }
+        var result = switch(latestOperation) {
+            case "+" -> latestValue + Double.parseDouble(screen);
+            case "-" -> latestValue - Double.parseDouble(screen);
+            case "x" -> latestValue * Double.parseDouble(screen);
+            case "/" -> latestValue / Double.parseDouble(screen);
+            default -> throw new IllegalArgumentException();
+        };
+        screen = Double.toString(result);
+        if(screen.equals("Infinity")) screen = "Error";
+        if(screen.endsWith(".0")) screen = screen.substring(0,screen.length()-2);
+        if(screen.contains(".") && screen.length() > 11) screen = screen.substring(0, 10);
     }
 
 }
