@@ -124,7 +124,7 @@ public class Calculator {
      */
     public void pressEqualsKey() {
 
-        if (screen.equals("0") || screen.isEmpty() || latestOperation.isEmpty()) {
+        if (latestOperation.isEmpty()) {
             screen = "Error";
             return;
         }
@@ -141,25 +141,14 @@ public class Calculator {
                 case "+" -> latestValue + secondOperand;
                 case "-" -> latestValue - secondOperand;
                 case "x" -> latestValue * secondOperand;
-                case "/" -> {
-                    if (secondOperand == 0) {
-                        throw new ArithmeticException("Division durch null");
-                    }
-                    yield latestValue / secondOperand;
-                }
-                default -> throw new IllegalArgumentException("Ungültige Operation: " + latestOperation);
+                case "/" -> latestValue / Double.parseDouble(screen);
+                default -> throw new IllegalArgumentException();
             };
 
             screen = Double.toString(result);
-            if(screen.equals("Infinity") || screen.equals("NaN")) {
-                screen = "Error";
-            } else if(screen.endsWith(".0")) {
-                screen = screen.substring(0, screen.length() - 2);
-            }
-
-            if(screen.contains(".") && screen.length() > 11) {
-                screen = screen.substring(0, 10);
-            }
+            if(screen.equals("Infinity")) screen = "Error";
+            if(screen.endsWith(".0")) screen = screen.substring(0,screen.length()-2);
+            if(screen.contains(".") && screen.length() > 11) screen = screen.substring(0, 10);
 
         } catch (NumberFormatException e) {
             screen = "Error";
