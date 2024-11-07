@@ -106,6 +106,7 @@ class CalculatorTest {
         assertEquals(expected, actual);
     }
 
+
     @Test
     @DisplayName("should correctly handle consecutive operations without pressing equals")
     void testConsecutiveOperations() {
